@@ -3,9 +3,12 @@ import threading
 import queue
 
 
+#setting up the structure for saving the sended messages,
+#and the list that wil contain all the clients that joined the chat
 messages = queue.Queue()
 clients=[]
 
+#preparing the server specifying the ip address and the port that the server will be
 server = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 server.bind(("localhost",9999))
 
@@ -16,6 +19,7 @@ def receive():
             messages.put((message,addr))
         except:
             pass
+
 def broadcast():
     while True:
         while not messages.empty():
@@ -33,8 +37,8 @@ def broadcast():
                 except:
                     clients.remove(client)
 
-t1=threading.Thread(target=receive)
-t2=threading.Thread(target=broadcast)
+thread_Receive=threading.Thread(target=receive)
+thread_Broadcast=threading.Thread(target=broadcast)
 
-t1.start()
-t2.start()
+thread_Receive.start()
+thread_Broadcast.start()
